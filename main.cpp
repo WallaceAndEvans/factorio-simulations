@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/*
 struct Item {
     int sourceColumn;
 };
@@ -96,8 +97,10 @@ void release() {
         free(((struct Belt**)objects)[i]);
     }
 }
+*/
 
 int main() {
+    /*
     initObjects(100);
 
     pushBelt(NULL);
@@ -151,6 +154,8 @@ int main() {
 
     release();
     free(objects);
+    */
+    printf("hello, world\n");
     return 0;
 }
 
