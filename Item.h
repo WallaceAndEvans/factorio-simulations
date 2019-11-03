@@ -5,21 +5,26 @@
 
 #include "SimulatedComponent.h"
 
-struct HistoryEntry {
-    SimulatedComponent *host;
-};
-
 class Item {
+    struct HistoryEntry {
+        SimulatedComponent *host;
+        Lane::Type lane;
+        unsigned pos;
+    };
+
     private:
-        int source;
+        //int source;
         std::vector<HistoryEntry> history;
         
     public:
-        Item(int);
-        int getSource() const;
+        //Item();
+        //int getSource() const;
 
         // history control
         void noop();
+        void move(SimulatedComponent *container, Lane::Type lane, unsigned pos);
+        void walk(SimulatedComponent *container, unsigned pos);
+        void walk(SimulatedComponent *container);
 };
 
 #endif

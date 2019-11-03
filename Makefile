@@ -1,9 +1,10 @@
 # Declaration of variables
 CC=g++
-CC_FLAGS=-W -Wall -Wextra -Werror -g -std=c++0x
+#CC_FLAGS=-W -Wall -Wextra -Werror -g -std=c++0x
+CC_FLAGS=-W -Wall -Wextra -Werror -g -std=c++17
 
 # File names
-EXEC=run
+EXEC=factorio-sim
 SOURCES=$(wildcard *.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
 
@@ -14,6 +15,10 @@ $(EXEC): $(OBJECTS)
 # To obtain object files
 %.o: %.cpp
 	$(CC) $(CC_FLAGS) -c $< -o $@
+
+# Recompile on changes to headers as well
+%.cpp: %.h
+	touch *.cpp
 
 # To remove generated files
 clean:

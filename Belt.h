@@ -7,17 +7,26 @@
 #include "Item.h"
 #include "SimulatedComponent.h"
 
-enum struct Lane { left, right };
 
 class Belt : public SimulatedComponent {
+    typedef Item *Storage[LANE_LENGTH];
+
     private:
-        std::vector<Item> items;
         Belt *prev;
         Belt *next;
+
+        bool willPushItem() const;
+        void push(Item* &src, Item* &dest, Belt* other = nullptr);
+        void pushEndOfLane(Lane::Type lane);
+
+    protected:
+        Storage lanes[Lane::COUNT];
+
+        Belt(std::string name);
         
     public:
         Belt();
-        void tick(int time);
+        virtual void tick(unsigned time);
 };
 
 #endif
