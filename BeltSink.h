@@ -1,22 +1,24 @@
 #ifndef __BELT_SINK_H
 #define __BELT_SINK_H
 
+#include <unordered_map>
+
 #include "Item.h"
 #include "Belt.h"
 
 class BeltSink : public Belt {
-    typedef unsigned collected_t[Lane::COUNT];
+    typedef std::unordered_map<Lane::Type, unsigned, std::hash<int>> consumed_t;
 
     private:
-        //unsigned collected[Lane::COUNT];
-        collected_t collected;
+        consumed_t consumed;
 
     public:
         BeltSink();
+        virtual ~BeltSink();
 
         virtual void tick(unsigned time);
 
-        const collected_t &getCounts() const;
+        const consumed_t &getConsumed() const;
 };
 
 #endif

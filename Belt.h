@@ -26,7 +26,14 @@ class Belt : public SimulatedComponent {
         
     public:
         Belt();
+        virtual ~Belt();
+
         virtual void tick(unsigned time);
+
+        void setNext(Belt* next);
+        void setPrev(Belt* prev);
+        Belt* getNext() const;
+        Belt* getPrev() const;
 };
 
 #endif

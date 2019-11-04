@@ -16,6 +16,20 @@ Lane::Type operator+=(Lane::Type& l, int r) {
     return l;
 }
 
+std::ostream& operator<<(std::ostream& out, Lane::Type lane) {
+    switch(lane) {
+        case Lane::LEFT:
+            out << "Left";
+            break;
+        case Lane::RIGHT:
+            out << "Right";
+            break;
+        default:
+            out << "INVALID LANE";
+    }
+    return out;
+}
+
 std::string SimulatedComponent::getUniqueName(const std::string& name) {
     static unsigned id = 0;
     std::ostringstream ss;
@@ -26,6 +40,8 @@ std::string SimulatedComponent::getUniqueName(const std::string& name) {
 }
 
 SimulatedComponent::SimulatedComponent(std::string name): name(getUniqueName(name)) {}
+
+SimulatedComponent::~SimulatedComponent() {}
 
 const std::string &SimulatedComponent::getName() const {
     return name;
@@ -43,14 +59,24 @@ bool SimulatedComponent::finishedTick(unsigned time) {
     return simulated.find(time) != simulated.end();
 }
 
-void SimulatedComponent::tick(unsigned time) {
-    auto attemptedInsert = simulated.insert(time);
-    const bool newlyInserted = attemptedInsert.second;
+void SimulatedComponent::step(unsigned time) {
+    auto res = simulated.insert(time);
+    const bool newlyInserted = res.second;
     if (!newlyInserted) {
         log(time, "duplicate tick time!!");
         std::ostringstream ss;
         ss << "timestamp " << time << " has already been visited for " << getName();
         throw std::invalid_argument(ss.str());
     }
+    tick(time);
+}
+
+std::ostream& operator<<(std::ostream& out, SimulatedComponent* component) {
+    if (component) {
+        out << component->getName();
+    } else {
+        out << "INVALID COMPONENT";
+    }
+    return out;
 }
 

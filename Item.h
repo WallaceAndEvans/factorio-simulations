@@ -1,31 +1,38 @@
 #ifndef __ITEM_H
 #define __ITEM_H
 
+#include <ostream>
 #include <vector>
 
 #include "SimulatedComponent.h"
 
 class Item {
-    struct HistoryEntry {
-        SimulatedComponent *host;
-        Lane::Type lane;
-        unsigned pos;
-    };
+    public:
+        struct HistoryEntry {
+            SimulatedComponent *host;
+            Lane::Type lane;
+            unsigned pos;
+        };
 
     private:
-        //int source;
         std::vector<HistoryEntry> history;
         
     public:
-        //Item();
-        //int getSource() const;
+        Item(SimulatedComponent* host, Lane::Type lane, unsigned pos);
+
+        unsigned getNumTicks() const;
+        const HistoryEntry &getCurrentLocation() const;
+        SimulatedComponent *getSource() const;
 
         // history control
         void noop();
-        void move(SimulatedComponent *container, Lane::Type lane, unsigned pos);
-        void walk(SimulatedComponent *container, unsigned pos);
-        void walk(SimulatedComponent *container);
+        void move(SimulatedComponent *host, Lane::Type lane, unsigned pos);
+        void walk(SimulatedComponent *host, unsigned pos);
+        void walk();
 };
+
+std::ostream& operator<<(std::ostream& out, const Item::HistoryEntry &entry);
+std::ostream& operator<<(std::ostream& out, const Item* item);
 
 #endif
 

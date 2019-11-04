@@ -8,12 +8,17 @@
 
 class BeltSource : public Belt {
     private:
+        unsigned created;
+        static unsigned referenceCount;
         static std::vector<Item*> ledger;
+
+        void populateItems();
 
     public:
         BeltSource();
-        ~BeltSource();
+        virtual ~BeltSource();
         virtual void tick(unsigned time);
+        unsigned getNumCreated() const;
 };
 
 #endif
