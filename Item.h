@@ -12,6 +12,9 @@ class Item {
             SimulatedComponent *host;
             Lane::Type lane;
             unsigned pos;
+            unsigned times;
+            bool operator==(const HistoryEntry& other) const;
+            size_t operator()(const HistoryEntry& entry) const;
         };
 
     private:
@@ -22,7 +25,7 @@ class Item {
 
         unsigned getNumTicks() const;
         const HistoryEntry &getCurrentLocation() const;
-        SimulatedComponent *getSource() const;
+        const HistoryEntry &getSource() const;
 
         // history control
         void noop();

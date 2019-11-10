@@ -9,21 +9,36 @@
 #include "SimulatedComponent.h"
 
 #undef SINK
-// #define SINK
 #define SINK
-const unsigned NUM_TICKS = 1000000;
+//const unsigned NUM_STEPS = 123454;
+const unsigned NUM_STEPS = 100000;
+
+void attach(std::vector<SimulatedComponent*> &components, SimulatedComponent *next) {
+    static_cast<Belt*>(components.back())->setNext((Belt*)next);
+    components.push_back(next);
+}
+
+std::vector<unsigned> range(unsigned len = 0) {
+    std::vector<unsigned> res(len);
+    for (unsigned i = 0; i < len; ++i) {
+        res[i] = i;
+    }
+    return res;
+}
 
 int main() {
+    std::cout << "sizeof(size_t): " << sizeof(size_t) << std::endl;
     std::vector<SimulatedComponent*> components;
 
     components.push_back(new BeltSource());
-    components.push_back(new Belt());
-    ((Belt*)(components[1]))->setPrev((Belt*)(components[0]));
-    components.push_back(new Belt());
-    ((Belt*)(components[2]))->setPrev((Belt*)(components[1]));
+    for (auto i : range(100)) {
+        attach(components, new Belt());
+        // hack - compiler doesn't like unused variables
+        continue;
+        i = i;
+    }
 #ifdef SINK
-    components.push_back(new BeltSink());
-    ((Belt*)(components[3]))->setPrev((Belt*)(components[2]));
+    attach(components, new BeltSink());
 #endif
 
     for (auto it : components) {
@@ -31,24 +46,30 @@ int main() {
         std::cout << it->getName() << "'s next: " << ((Belt*)it)->getNext() << std::endl;
     }
     
-    for (unsigned tick = 0; tick < NUM_TICKS; ++tick) {
+    for (unsigned t = 0; t < NUM_STEPS; ++t) {
         for (auto it : components) {
-            //std::cout << "doing " << it->getName() << std::endl;
-            if (it->finishedTick(tick)) {
-                //std::cout << it->getName() << " has already been simulated; skipping..." << std::endl;
+            if (it->finishedStep(t)) {
                 continue;
             }
-            it->tick(tick);
+            it->step(t);
         }
-        //std::cout << "*** end of tick " << tick << std::endl;
     }
 
-    std::cout << components[0] << " created " << dynamic_cast<BeltSource*>(components[0])->getNumCreated() << " items" << std::endl;
+    const BeltSource *sourceBelt = (BeltSource*)components.front();
+    std::cout << (SimulatedComponent*)sourceBelt << " created " << sourceBelt->getNumCreated() << " items" << std::endl;
 #ifdef SINK
-    const auto consumed = dynamic_cast<BeltSink*>(components[3])->getConsumed();
-    std::cout << components[3] << " consumed counts:" << std::endl;
-    for (auto &it : consumed) {
-        std::cout << it.first << ": " << it.second << std::endl;
+    const BeltSink *sink = (BeltSink*)components.back();
+    const auto &consumed = sink->getConsumed();
+    std::cout << (SimulatedComponent*) sink << " consumed counts:" << std::endl;
+    for (auto &dest : consumed) {
+        const auto &destLane = dest.first;
+        const auto &sources = dest.second;
+        std::cout << "lane " << destLane << ": " << std::endl;
+        for (auto &source : sources) {
+            const auto &sourceLane = source.first;
+            const auto &count = source.second;
+            std::cout << "\tfrom " << sourceLane << ": " << count << std::endl;
+        }
     }
 #endif
     std::cout << "=========================" << std::endl << std::endl;

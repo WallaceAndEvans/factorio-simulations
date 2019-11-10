@@ -16,24 +16,24 @@ class Belt : public SimulatedComponent {
         Belt *next;
 
         bool willPushItem() const;
-        void push(Item* &src, Item* &dest, Belt* other = nullptr);
+        void push(Item* &src, Item* &dest, Belt *other = nullptr);
         void pushEndOfLane(Lane::Type lane);
 
     protected:
         Storage lanes[Lane::COUNT];
 
         Belt(std::string name);
+
+        virtual void tick(unsigned time);
         
     public:
         Belt();
         virtual ~Belt();
 
-        virtual void tick(unsigned time);
-
-        void setNext(Belt* next);
-        void setPrev(Belt* prev);
-        Belt* getNext() const;
-        Belt* getPrev() const;
+        void setNext(Belt *next);
+        void setPrev(Belt *prev);
+        Belt *getNext() const;
+        Belt *getPrev() const;
 };
 
 #endif
