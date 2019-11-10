@@ -1,7 +1,5 @@
-*.o
+build/
 *.swp
 *.txt
-run
 factorio-sim
-output
-compile
+
