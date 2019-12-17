@@ -3,3 +3,4 @@
 factorio-sim
 output
 build/*
+compile_commands.json
