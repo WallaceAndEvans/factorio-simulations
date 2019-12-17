@@ -4,10 +4,8 @@
 #include "Belt.h"
 #include "BeltSink.h"
 #include "BeltSource.h"
-#include "ControlFlow.h"
 #include "Item.h"
 #include "SimulatedComponent.h"
-#include "Splitter.h"
 
 const unsigned NUM_STEPS = 100000;
 
@@ -31,7 +29,8 @@ int main() {
 
     components.push_back(new BeltSource());
 
-    compile_for<range(100)>([&](auto i)) { attach(components, new Belt()); }
+    for (int i = 0; i < 100; i++)
+        attach(components, new Belt());
 
     if (SINK)
         attach(components, new BeltSink());
