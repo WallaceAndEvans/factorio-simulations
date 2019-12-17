@@ -3,22 +3,21 @@
 
 #include <vector>
 
-#include "Item.h"
 #include "Belt.h"
+#include "Item.h"
 
 class BeltSource : public Belt {
-    private:
-        unsigned created;
+  private:
+    unsigned created;
 
-        void populateItems();
+    void populateItems();
 
-    protected:
-        virtual void tick(unsigned time);
+  protected:
+    virtual void tick(unsigned time);
 
-    public:
-        BeltSource();
-        unsigned getNumCreated() const;
+  public:
+    BeltSource();
+    unsigned getNumCreated() const;
 };
 
 #endif
-

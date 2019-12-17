@@ -14,28 +14,26 @@ std::ostream &operator<<(std::ostream &out, Lane::Type lane);
 const unsigned LANE_LENGTH = 4;
 
 class SimulatedComponent {
-    private:
-        const std::string name;
-        unsigned simulated;
+  private:
+    const std::string name;
+    unsigned simulated;
 
-        template <typename T>
-        void _log(unsigned time, T msg) const;
-        std::string getUniqueName(const std::string &name);
+    template <typename T> void _log(unsigned time, T msg) const;
+    std::string getUniqueName(const std::string &name);
 
-    protected:
-        SimulatedComponent(std::string name);
+  protected:
+    SimulatedComponent(std::string name);
 
-        virtual void tick(unsigned time) = 0;
+    virtual void tick(unsigned time) = 0;
 
-    public:
-        virtual ~SimulatedComponent();
+  public:
+    virtual ~SimulatedComponent();
 
-        const std::string &getName() const;
-        bool finishedStep(unsigned time);
-        void step(unsigned time);
+    const std::string &getName() const;
+    bool finishedStep(unsigned time);
+    void step(unsigned time);
 };
 
 std::ostream &operator<<(std::ostream &out, SimulatedComponent *component);
 
 #endif
-
