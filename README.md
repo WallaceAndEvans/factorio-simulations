@@ -3,11 +3,11 @@
 To run:
 
 ```bash
-make && ./factorio-sim
+cmake .. && make
 ```
 
 With profiling:
 
 ```bash
-make && /usr/bin/time -v ./factorio-sim &> output
+cmake .. && make && /usr/bin/time -v ./factorio-sim &> output
 ```

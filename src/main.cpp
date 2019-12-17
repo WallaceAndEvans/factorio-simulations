@@ -1,20 +1,17 @@
 #include <iostream>
 #include <vector>
 
-#include "Item.h"
 #include "Belt.h"
-#include "BeltSource.h"
 #include "BeltSink.h"
-#include "Splitter.h"
+#include "BeltSource.h"
+#include "Item.h"
 #include "SimulatedComponent.h"
 
-#undef SINK
-#define SINK
-//const unsigned NUM_STEPS = 123454;
 const unsigned NUM_STEPS = 100000;
 
-void attach(std::vector<SimulatedComponent*> &components, SimulatedComponent *next) {
-    static_cast<Belt*>(components.back())->setNext((Belt*)next);
+void attach(std::vector<SimulatedComponent *> &components,
+            SimulatedComponent *next) {
+    static_cast<Belt *>(components.back())->setNext((Belt *)next);
     components.push_back(next);
 }
 
@@ -28,53 +25,57 @@ std::vector<unsigned> range(unsigned len = 0) {
 
 int main() {
     std::cout << "sizeof(size_t): " << sizeof(size_t) << std::endl;
-    std::vector<SimulatedComponent*> components;
+    std::vector<SimulatedComponent *> components;
 
     components.push_back(new BeltSource());
-    for (auto i : range(100)) {
+
+    for (int i = 0; i < 100; i++)
         attach(components, new Belt());
-        // hack - compiler doesn't like unused variables
-        continue;
-        i = i;
-    }
-#ifdef SINK
-    attach(components, new BeltSink());
-#endif
+
+    if (SINK)
+        attach(components, new BeltSink());
 
     for (auto it : components) {
-        std::cout << it->getName() << "'s prev: " << ((Belt*)it)->getPrev() << std::endl;
-        std::cout << it->getName() << "'s next: " << ((Belt*)it)->getNext() << std::endl;
+        std::cout << it->getName() << "'s prev: " << ((Belt *)it)->getPrev()
+                  << std::endl;
+        std::cout << it->getName() << "'s next: " << ((Belt *)it)->getNext()
+                  << std::endl;
     }
-    
+
     for (unsigned t = 0; t < NUM_STEPS; ++t) {
         for (auto it : components) {
-            if (it->finishedStep(t)) {
-                continue;
+            if (!it->finishedStep(t)) {
+                it->step(t);
             }
-            it->step(t);
         }
     }
 
-    const BeltSource *sourceBelt = (BeltSource*)components.front();
-    std::cout << (SimulatedComponent*)sourceBelt << " created " << sourceBelt->getNumCreated() << " items" << std::endl;
-#ifdef SINK
-    const BeltSink *sink = (BeltSink*)components.back();
-    const auto &consumed = sink->getConsumed();
-    std::cout << (SimulatedComponent*) sink << " consumed counts:" << std::endl;
-    for (auto &dest : consumed) {
-        const auto &destLane = dest.first;
-        const auto &sources = dest.second;
-        std::cout << "lane " << destLane << ": " << std::endl;
-        for (auto &source : sources) {
-            const auto &sourceLane = source.first;
-            const auto &count = source.second;
-            std::cout << "\tfrom " << sourceLane << ": " << count << std::endl;
+    const BeltSource *sourceBelt = (BeltSource *)components.front();
+    std::cout << (SimulatedComponent *)sourceBelt << " created "
+              << sourceBelt->getNumCreated() << " items" << std::endl;
+
+    if (SINK) {
+        const BeltSink *sink = (BeltSink *)components.back();
+        const auto &consumed = sink->getConsumed();
+        std::cout << (SimulatedComponent *)sink
+                  << " consumed counts:" << std::endl;
+
+        for (auto &dest : consumed) {
+            const auto &destLane = dest.first;
+            const auto &sources = dest.second;
+            std::cout << "lane " << destLane << ": " << std::endl;
+            for (auto &source : sources) {
+                const auto &sourceLane = source.first;
+                const auto &count = source.second;
+                std::cout << "\tfrom " << sourceLane << ": " << count
+                          << std::endl;
+            }
         }
     }
-#endif
+
     std::cout << "=========================" << std::endl << std::endl;
 
-    for (auto it : components) delete it;
+    for (auto it : components)
+        delete it;
     return 0;
 }
-
